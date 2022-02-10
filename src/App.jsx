@@ -3,30 +3,33 @@ import "./App.css";
 
 function App() {
   const [inputValue, setInputValue] = useState("");
-  const count = useRef(0);
-  const inputElement = useRef();
-
-  const focusInput = () => {
-    inputElement.current.focus();
-  };
+  const previousInputValue = useRef("");
 
   useEffect(() => {
-    count.current = count.current + 1;
-  });
+    console.log(`Fire useEffect with value observable inputValue: ${inputValue}`);
+    previousInputValue.current = inputValue;
+  }, [inputValue]);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(event) => setInputValue(event.target.value)}
-          ref={inputElement}
-        />
-        <h1>Render Count: {count.current}</h1>
-        <button onClick={focusInput}>Focus Input</button>
-      </header>
-    </div>
+    <>
+      <h1>Tracking State Changes</h1>
+      <p>
+        The <span>useRef</span> Hook can also be used to keep track of previous
+        state values.
+      </p>
+      <p>
+        This is because we are able to persist <span>useRef</span> values
+        between renders.
+      </p>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(event) => setInputValue(event.target.value)}
+      />
+
+      <h2>Current Value: {inputValue}</h2>
+      <h2>Previous Value: {previousInputValue.current}</h2>
+    </>
   );
 }
 
