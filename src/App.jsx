@@ -1,34 +1,55 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useReducer } from "react";
 import "./App.css";
 
-function App() {
-  const [inputValue, setInputValue] = useState("");
-  const previousInputValue = useRef("");
+const initialTodos = [
+  {
+    id: 1,
+    title: "Todo 1",
+    complete: false,
+  },
+  {
+    id: 2,
+    title: "Todo 2",
+    complete: false,
+  },
+];
 
-  useEffect(() => {
-    console.log(`Fire useEffect with value observable inputValue: ${inputValue}`);
-    previousInputValue.current = inputValue;
-  }, [inputValue]);
+// Should put inside service
+const completeTask = (taskId, todos = []) => {
+  return todos.map((todo) => {
+    return todo.id === taskId ? { ...todo, complete: !todo.complete } : todo;
+  });
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "COMPLETE":
+      return completeTask(action.id, state);
+    default:
+      return state;
+  }
+};
+
+function App() {
+  const [todos, dispatch] = useReducer(reducer, initialTodos);
+  const handleComplete = (todo) => {
+    dispatch({ type: "COMPLETE", id: todo.id });
+  };
 
   return (
     <>
-      <h1>Tracking State Changes</h1>
-      <p>
-        The <span>useRef</span> Hook can also be used to keep track of previous
-        state values.
-      </p>
-      <p>
-        This is because we are able to persist <span>useRef</span> values
-        between renders.
-      </p>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
-      />
-
-      <h2>Current Value: {inputValue}</h2>
-      <h2>Previous Value: {previousInputValue.current}</h2>
+      {todos.map((todo) => (
+        <div key={todo.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={todo.complete}
+              onChange={() => handleComplete(todo)}
+            />
+            {todo.title}
+          </label>
+        </div>
+      ))}
     </>
   );
 }
