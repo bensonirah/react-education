@@ -21,6 +21,7 @@ const completeTask = (taskId, todos = []) => {
   });
 };
 
+// Should have reducer per domain e.g: User CRUD reducer
 const reducer = (state, action) => {
   switch (action.type) {
     case "COMPLETE":
